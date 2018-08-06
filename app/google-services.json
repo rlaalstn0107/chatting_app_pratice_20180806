@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "161508331416",
+    "firebase_url": "https://chattingapppratice20180806.firebaseio.com",
+    "project_id": "chattingapppratice20180806",
+    "storage_bucket": "chattingapppratice20180806.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161508331416:android:4f8e88172fca21ee",
+        "android_client_info": {
+          "package_name": "com.example.alstn0107.chatting_app_pratice_20180806"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "161508331416-gdvpspechqnonum8rjtcrr1r8375ln4k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alstn0107.chatting_app_pratice_20180806",
+            "certificate_hash": "196d5fc20d1b8b8f7dcc3f7e10b0e67f22f8c4c0"
+          }
+        },
+        {
+          "client_id": "161508331416-12odordcbfsfql938tigp0cav3et7qqs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_j-MVhXbpzf12_WAC3upJPRXpCvDoF2k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "161508331416-12odordcbfsfql938tigp0cav3et7qqs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
