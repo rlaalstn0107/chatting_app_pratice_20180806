@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -17,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     String TAG="MainActivity";
     EditText etEmail;
     EditText etPassword;
+    String stEmail;
+    String stPassword;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         etEmail = (EditText)findViewById(R.id.etEmail);
         etPassword=(EditText)findViewById(R.id.etPassword);
+
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -50,10 +56,11 @@ public class MainActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String stEmail=etEmail.getText().toString();
-                String stPassword=etPassword.getText().toString();
+                 stEmail=etEmail.getText().toString();
+                 stPassword=etPassword.getText().toString();
 
                 Toast.makeText(getApplicationContext(), stEmail+","+stPassword, Toast.LENGTH_SHORT).show();
+                registerUser(stEmail,stPassword);
             }
         });
 
@@ -62,14 +69,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
 
-                Intent in =new Intent(MainActivity.this,ChatActivity.class);
+                stEmail=etEmail.getText().toString();
+                stPassword=etPassword.getText().toString();
 
-                startActivity(in);
+                userLogin(stEmail,stPassword);
 
             }
         });
 
     }
+    //생명주기 관련 메소드 addAuthStateListener실행
     @Override
     public void onStart() {
         super.onStart();
@@ -82,6 +91,59 @@ public class MainActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    public void registerUser(String email,String password){
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+
+                        Toast.makeText(MainActivity.this, "Success",
+                                Toast.LENGTH_SHORT).show();
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "failed",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(MainActivity.this, "Success else",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+    }
+
+    private void userLogin(String email,String password){
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                        Intent in =new Intent(MainActivity.this,ChatActivity.class);
+                        startActivity(in);
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(MainActivity.this, "AuthFailed",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+
     }
 
 }
