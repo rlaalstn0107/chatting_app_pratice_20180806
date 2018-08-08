@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     EditText etPassword;
     String stEmail;
     String stPassword;
-
+    ProgressBar pbLogin;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
         etEmail = (EditText)findViewById(R.id.etEmail);
         etPassword=(EditText)findViewById(R.id.etPassword);
+        pbLogin=(ProgressBar)findViewById(R.id.pbLogin);
+
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -59,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                  stEmail=etEmail.getText().toString();
                  stPassword=etPassword.getText().toString();
 
-                Toast.makeText(getApplicationContext(), stEmail+","+stPassword, Toast.LENGTH_SHORT).show();
                 registerUser(stEmail,stPassword);
             }
         });
@@ -122,15 +124,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void userLogin(String email,String password){
+        pbLogin.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                        Intent in =new Intent(MainActivity.this,ChatActivity.class);
-                        startActivity(in);
-
+                        pbLogin.setVisibility(View.GONE);
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
@@ -138,6 +139,9 @@ public class MainActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(MainActivity.this, "AuthFailed",
                                     Toast.LENGTH_SHORT).show();
+                        }else {
+                            Intent in =new Intent(MainActivity.this,ChatActivity.class);
+                            startActivity(in);
                         }
 
                     }
