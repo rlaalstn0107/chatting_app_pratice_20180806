@@ -59,11 +59,17 @@ public class MainActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 stEmail=etEmail.getText().toString();
-                 stPassword=etPassword.getText().toString();
+                stEmail=etEmail.getText().toString();
+                stPassword=etPassword.getText().toString();
 
-                registerUser(stEmail,stPassword);
+                //
+                if (stEmail.isEmpty() || stEmail.equals("") || stPassword.isEmpty() || stPassword.equals("")) {
+                    Toast.makeText(getApplicationContext(), "입력해 주세요.", Toast.LENGTH_SHORT).show();
+                }else {
+                    registerUser(stEmail, stPassword);
+                }
             }
+
         });
 
         Button btnLogin=(Button)findViewById(R.id.btnLogin);

@@ -37,6 +37,7 @@ public class ChatActivity extends AppCompatActivity {
     String email;
     FirebaseDatabase database;
     List<Chat> mChat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,10 +107,11 @@ public class ChatActivity extends AppCompatActivity {
 
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mAdapter= new MyAdapter(mDataset);
-        mRecyclerView.setAdapter(mAdapter);
         mChat =new ArrayList<>();
+        //
+        mAdapter= new MyAdapter(mChat);
+        mRecyclerView.setAdapter(mAdapter);
+
         DatabaseReference myRef = database.getReference("chats");
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
