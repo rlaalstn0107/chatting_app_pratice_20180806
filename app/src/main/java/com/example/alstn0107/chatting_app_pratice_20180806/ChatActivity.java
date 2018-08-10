@@ -82,9 +82,9 @@ public class ChatActivity extends AppCompatActivity {
                     Hashtable<String,String>chat = new Hashtable<String,String>();
                     chat.put("email",email);
                     chat.put("text",stText);
-
-
                     myRef.setValue(chat);
+                    etText.setText("");
+
                 }
             }
         });

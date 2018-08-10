@@ -79,9 +79,12 @@ public class MainActivity extends AppCompatActivity {
 
                 stEmail=etEmail.getText().toString();
                 stPassword=etPassword.getText().toString();
-
+                if (stEmail.isEmpty() || stEmail.equals("") || stPassword.isEmpty() || stPassword.equals("")) {
+                    Toast.makeText(getApplicationContext(), "입력해 주세요.", Toast.LENGTH_SHORT).show();
+                }else {
+                    registerUser(stEmail, stPassword);
+                }
                 userLogin(stEmail,stPassword);
-
             }
         });
 
@@ -101,14 +104,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void registerUser(String email,String password){
-
+    public void registerUser(String email,String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
                         Toast.makeText(MainActivity.this, "Success",
                                 Toast.LENGTH_SHORT).show();
                         // If sign in fails, display a message to the user. If sign in succeeds
@@ -117,17 +118,14 @@ public class MainActivity extends AppCompatActivity {
                         if (!task.isSuccessful()) {
                             Toast.makeText(MainActivity.this, "failed",
                                     Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
+                        } else {
                             Toast.makeText(MainActivity.this, "Success else",
                                     Toast.LENGTH_SHORT).show();
                         }
 
                     }
                 });
-
-    }
+        }
 
     private void userLogin(String email,String password){
         pbLogin.setVisibility(View.VISIBLE);
@@ -146,14 +144,12 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "AuthFailed",
                                     Toast.LENGTH_SHORT).show();
                         }else {
-                            Intent in =new Intent(MainActivity.this,ChatActivity.class);
+                            Intent in =new Intent(MainActivity.this,TapActivity.class);
                             startActivity(in);
+                            finish();
                         }
-
                     }
                 });
-
-
     }
 
 }
