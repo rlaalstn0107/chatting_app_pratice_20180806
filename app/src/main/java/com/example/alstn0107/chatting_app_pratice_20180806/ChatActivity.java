@@ -109,7 +109,7 @@ public class ChatActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mChat =new ArrayList<>();
         //
-        mAdapter= new MyAdapter(mChat);
+        mAdapter= new MyAdapter(mChat,email,ChatActivity.this);
         mRecyclerView.setAdapter(mAdapter);
 
         DatabaseReference myRef = database.getReference("chats");
@@ -120,9 +120,8 @@ public class ChatActivity extends AppCompatActivity {
                 Chat chat =dataSnapshot.getValue(Chat.class);
 
                 mChat.add(chat);
+                mRecyclerView.scrollToPosition(mChat.size()-1);//recyclerView의 목록중 맨아래로 감
                 mAdapter.notifyItemInserted(mChat.size()-1);
-
-
 
             }
 
