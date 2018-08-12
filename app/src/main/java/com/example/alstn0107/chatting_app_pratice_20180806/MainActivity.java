@@ -1,6 +1,7 @@
 package com.example.alstn0107.chatting_app_pratice_20180806;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +47,20 @@ public class MainActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    //SharedPreferences 라는 것을 이용해 정보를 저장
+                    // Intent로 화면 이동할떄 정보를 보낼수 있는데 안그러고
+                    // shared를 이용하면 어떤곳이든 원하는 정보를 email이라는 곳에
+                    // 저장된 String 정보를 뺴서 쓸수 있음 MODE_PRIVATE 이
+                    // 액티비티에서만 접근 할수 있다
+                    SharedPreferences sharedPreferences=getSharedPreferences("email",MODE_PRIVATE);
+                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    editor.putString("uid",user.getUid());
+                    editor.putString("email",user.getEmail());
+                    editor.apply();
+
+                    user.getEmail();
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
