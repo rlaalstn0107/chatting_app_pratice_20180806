@@ -20,8 +20,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +45,7 @@ public class ProfileFragment extends Fragment {
     Bitmap bitmap;
     String stUid;
     String stEmail;
+    String downloadUrl;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,6 +106,12 @@ public class ProfileFragment extends Fragment {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
 
+        mountainsRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                downloadUrl = task.getResult().toString();
+            }
+        });
         UploadTask uploadTask = mountainsRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -120,7 +129,6 @@ public class ProfileFragment extends Fragment {
                 Log.d("url", photoUri);
                 database 16.0.1부터는 이것을 쓰지 못합니다.
                 */
-                Uri downloadUrl = taskSnapshot.getUploadSessionUri();
                 String photoUri =  String.valueOf(downloadUrl);
                 Log.d("url", photoUri);
                 //위에 3줄도 원래 구현하려고한 URL을 Database에 저장하는거에 실패한 코드입니다. 해결법을 못 찾겠습니다.
@@ -148,10 +156,9 @@ public class ProfileFragment extends Fragment {
 
                     }
                 });
-
-
             }
         });
+
     }
 
     @Override
