@@ -17,6 +17,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Hashtable;
 
 public class MainActivity extends AppCompatActivity {
     String TAG="MainActivity";
@@ -25,8 +29,11 @@ public class MainActivity extends AppCompatActivity {
     String stEmail;
     String stPassword;
     ProgressBar pbLogin;
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    DatabaseReference myRef;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +43,13 @@ public class MainActivity extends AppCompatActivity {
         etEmail = (EditText)findViewById(R.id.etEmail);
         etPassword=(EditText)findViewById(R.id.etPassword);
         pbLogin=(ProgressBar)findViewById(R.id.pbLogin);
-
-
-
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("users");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
@@ -59,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("email",user.getEmail());
                     editor.apply();
 
-                    user.getEmail();
+
 
                 } else {
                     // User is signed out
@@ -120,22 +126,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void registerUser(String email,String password) {
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-                        Toast.makeText(MainActivity.this, "Success",
-                                Toast.LENGTH_SHORT).show();
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "failed",
+                            Toast.makeText(MainActivity.this, "Authentication failed",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(MainActivity.this, "Success else",
+                            Toast.makeText(MainActivity.this, "Authentication success",
                                     Toast.LENGTH_SHORT).show();
+
+                            if (user != null) {
+                                Hashtable<String, String> profile = new Hashtable<String, String>();
+                                profile.put("email", user.getEmail());
+                                profile.put("photo", "");
+                                myRef.child(user.getUid()).setValue(profile);
+                            }
+
                         }
 
                     }
@@ -161,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                         }else {
                             Intent in =new Intent(MainActivity.this,TapActivity.class);
                             startActivity(in);
-                            finish();
+
                         }
                     }
                 });

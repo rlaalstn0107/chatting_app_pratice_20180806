@@ -13,17 +13,21 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +36,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,13 +45,14 @@ import java.util.Hashtable;
 
 public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
-
+    String TAG = getClass().getSimpleName();
     ImageView ivUser;
     private StorageReference mStorageRef;
     Bitmap bitmap;
     String stUid;
     String stEmail;
     String downloadUrl;
+    ProgressBar pbLogin;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +64,57 @@ public class ProfileFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("email", Context.MODE_PRIVATE);
         stUid = sharedPreferences.getString("uid", "");
         stEmail = sharedPreferences.getString("email", "");
+
+        pbLogin=(ProgressBar)v.findViewById(R.id.pbLogin);
+
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+
+        myRef.child("users").child(stUid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                /*
+                String value = dataSnapshot.getValue().toString();
+                String stPhoto = dataSnapshot.child("photo").getValue().toString();
+                */
+
+                String value = dataSnapshot.getValue().toString();
+                String stPhoto = dataSnapshot.child("photo").getValue().toString();
+
+                if(TextUtils.isEmpty(stPhoto)){
+                    pbLogin.setVisibility(View.GONE);
+
+
+                }else{
+
+                    pbLogin.setVisibility(View.VISIBLE);
+                    Picasso.get()
+                            .load(stPhoto)
+                            .fit()
+                            .centerInside()
+                            .into(ivUser, new Callback.EmptyCallback() {
+                        @Override public void onSuccess() {
+                            // Index 0 is the image view.
+                            Log.d(TAG,"SUCCESS");
+                            pbLogin.setVisibility(View.GONE);
+                        }
+                    });
+                }
+
+
+
+                Log.d(TAG, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
 
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -95,6 +153,16 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+        Button btnLogout = (Button) v.findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                getActivity().finish();
+            }
+        });
+
         return v;
     }
 
@@ -131,8 +199,6 @@ public class ProfileFragment extends Fragment {
                 */
                 String photoUri =  String.valueOf(downloadUrl);
                 Log.d("url", photoUri);
-                //위에 3줄도 원래 구현하려고한 URL을 Database에 저장하는거에 실패한 코드입니다. 해결법을 못 찾겠습니다.
-
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("users");
 
@@ -158,7 +224,6 @@ public class ProfileFragment extends Fragment {
                 });
             }
         });
-
     }
 
     @Override
