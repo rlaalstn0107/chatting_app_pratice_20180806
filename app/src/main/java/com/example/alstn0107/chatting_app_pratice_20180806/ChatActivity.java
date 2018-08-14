@@ -35,8 +35,9 @@ public class ChatActivity extends AppCompatActivity {
     EditText etText;
     Button btnSend;
     String email;
-    FirebaseDatabase database;
     List<Chat> mChat;
+    FirebaseDatabase database;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

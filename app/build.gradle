@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.alstn0107.chatting_app_pratice_20180806"
-        minSdkVersion 16
+        minSdkVersion 25
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"

@@ -103,10 +103,11 @@ public class MainActivity extends AppCompatActivity {
                 if (stEmail.isEmpty() || stEmail.equals("") || stPassword.isEmpty() || stPassword.equals("")) {
                     Toast.makeText(getApplicationContext(), "입력해 주세요.", Toast.LENGTH_SHORT).show();
                 }else {
-                    registerUser(stEmail, stPassword);
-                }
-                userLogin(stEmail,stPassword);
-            }
+                    userLogin(stEmail,stPassword);
+                    }
+
+
+                 }
         });
 
     }
